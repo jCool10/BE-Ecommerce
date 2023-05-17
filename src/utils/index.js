@@ -21,7 +21,7 @@ const updateNestedObjectParser = (obj) => {
   const final = {};
 
   Object.keys(obj).forEach((key) => {
-    if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
+     if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
       const response = updateNestedObjectParser(obj[key]);
 
       Object.keys(response).forEach((keyRes) => {
