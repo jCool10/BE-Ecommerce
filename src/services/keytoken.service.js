@@ -1,4 +1,3 @@
-const { update } = require('lodash')
 const keytokeModel = require('../models/keytoken.model')
 const { Types } = require('mongoose')
 
@@ -10,13 +9,6 @@ class KeyTokenService {
     refreshToken,
   }) => {
     try {
-      // const tokens = await keytokeModel.create({
-      //   user: userId,
-      //   publicKey,
-      //   privateKey,
-      // });
-      // return tokens ? tokens.publicKey : null;
-
       //level2
       const filter = { user: userId },
         update = { publicKey, privateKey, refreshTokenUsed: [], refreshToken },
@@ -34,7 +26,7 @@ class KeyTokenService {
   }
 
   static findByUserId = async (userId) => {
-    return await keytokeModel.findOne({ user: Types.ObjectId(userId) }).lean()
+    return await keytokeModel.findOne({ user: new Types.ObjectId(userId) })
   }
 
   static removeKeyById = async (id) => {
@@ -50,9 +42,7 @@ class KeyTokenService {
   }
 
   static deleteKey = async (userId) => {
-    return await keytokeModel.deleteOne({
-      user: Types.ObjectId(userId),
-    })
+    return await keytokeModel.deleteOne({ user: Types.ObjectId(userId) })
   }
 }
 

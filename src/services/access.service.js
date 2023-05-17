@@ -22,7 +22,7 @@ const RoleShop = {
 class AccessService {
   static logout = async (keyStore) => {
     const delKey = await keytokenService.removeKeyById(keyStore._id)
-    console.log(delKey)
+    console.log('delKey', delKey)
     return delKey
   }
 
@@ -73,11 +73,43 @@ class AccessService {
     return { user: { userId, email }, token }
   }
 
+  static handlerRefreshTokenV2 = async ({ refreshToken, user, keyStore }) => {
+    const { userId, email } = user
+
+    if (keyStore.refreshTokenUsed.includes(refreshToken)) {
+      await keytokenService.deleteKey(userId)
+      throw new ForbiddenError('Something wrong happen!!Pls relogin ')
+    }
+
+    if (keyStore.refreshToken !== refreshToken)
+      throw new AuthFailureError('Shop not registered')
+
+    const foundShop = await findByEmail({ email })
+    if (!foundShop) throw new AuthFailureError('Shop not registered')
+
+    const tokens = await createTokenPair(
+      { userId, email },
+      keyStore.publicKey,
+      keyStore.privateKey
+    )
+
+    await keyStore.update({
+      $set: {
+        refreshToken: tokens.refreshToken,
+      },
+      $addToSet: {
+        refreshTokenUsed: refreshToken,
+      },
+    })
+
+    return { user, tokens }
+  }
+
   static login = async ({ email, password, refreshToken = null }) => {
     const foundShop = await findByEmail({ email })
     if (!foundShop) throw new BadRequestError('Shop not registered')
 
-    const match = bcrypt.compare(password.foundShop.password)
+    const match = bcrypt.compare(password, foundShop.password)
     if (!match) throw new AuthFailureError('Authentication error')
 
     const privateKey = crypto.randomBytes(64).toString('hex')
@@ -124,19 +156,6 @@ class AccessService {
     })
 
     if (newShop) {
-      // created privateKey, publicKey
-      // const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
-      //   modulusLength: 4096,
-      //   publicKeyEncoding: {
-      //     type: "pkcs1",
-      //     format: "pem",
-      //   },
-      //   privateKeyEncoding: {
-      //     type: "pkcs1",
-      //     format: "pem",
-      //   },
-      // });
-
       const privateKey = crypto.randomBytes(64).toString('hex')
       const publicKey = crypto.randomBytes(64).toString('hex')
 
@@ -157,7 +176,7 @@ class AccessService {
         privateKey
       )
 
-      console.log(tokens)
+      console.log('tokens', tokens)
 
       return {
         code: 201,
