@@ -1,47 +1,33 @@
-const StatusCode = {
-  OK: 200,
-  CREATED: 201,
-}
-
-const ReasonStatusCode = {
-  OK: 'Success',
-  CREATED: 'Created',
-}
+const { ReasonPhrases, StatusCodes } = require("../utils/httpStatusCode");
 
 class SuccessResponse {
-  constructor({
-    message,
-    statusCode = StatusCode.OK,
-    reasonStatusCode = ReasonStatusCode.OK,
-    metadata = {},
-  }) {
-    this.message = !message ? reasonStatusCode : message
-    this.status = statusCode
-    this.metadata = metadata
+  constructor({ message = ReasonPhrases.OK, statusCode = StatusCodes.OK, metadata = {} }) {
+    this.message = message;
+    this.status = statusCode;
+    this.metadata = metadata;
   }
 
-  send(res, header = {}) {
-    return res.status(this.status).json(this)
+  send(res) {
+    return res.status(this.status).json(this);
   }
 }
 
 class OK extends SuccessResponse {
-  constructor({ message, metadata }) {
-    super({ message, metadata })
+  constructor({ message = ReasonPhrases.OK, metadata = {} }) {
+    super({ message, metadata });
   }
 }
 
-class CREATED extends SuccessResponse {
-  constructor({
-    message,
-    statusCode = StatusCode.CREATED,
-    reasonStatusCode = ReasonStatusCode.CREATED,
-    metadata,
-    options = {},
-  }) {
-    super({ message, statusCode, reasonStatusCode, metadata })
-    this.options = options
+class Created extends SuccessResponse {
+  constructor({ message, metadata, options = {} }) {
+    super({
+      message,
+      statusCode: StatusCodes.CREATED,
+      reasonStatusCode: ReasonPhrases.CREATED,
+      metadata,
+    });
+    this.options = options;
   }
 }
 
-module.exports = { OK, CREATED, SuccessResponse }
+module.exports = { OK, Created, SuccessResponse };
