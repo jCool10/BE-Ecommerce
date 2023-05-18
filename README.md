@@ -1,5 +1,52 @@
 # BE-Ecommerce
 
+## Mục đích
+
+- Dự án này nhằm xây dựng một hệ thống backend cho một ứng dụng thương mại điện tử. Nó cung cấp các API để quản lý sản phẩm, đơn hàng, người dùng và các chức năng liên quan khác. Mục tiêu của dự án là cung cấp một nền tảng mạnh mẽ để phát triển ứng dụng thương mại điện tử linh hoạt và có thể mở rộng.
+
+## Cài đặt
+
+1. Sao chép dự án từ kho lưu trữ:
+
+```bash
+git clone https://github.com/jCool10/BE-Ecommerce.git
+```
+
+2. Cài đặt các phụ thuộc:
+
+```bash
+npm install
+```
+
+3. Cấu hình biến môi trường:
+
+Tạo một tệp `.env` trong thư mục gốc của dự án và cung cấp các biến môi trường sau:
+
+```.env
+PORT=
+MONGODB_URI=<Đường dẫn MongoDB>
+```
+
+## Sử dụng
+
+Chạy ứng dụng:
+
+```bash
+npm run dev
+```
+
+Sau khi ứng dụng chạy thành công, bạn có thể truy cập vào địa chỉ `http://localhost:${process.env.PORT} `hoặc địa chỉ đã được cấu hình để sử dụng các API của dự án.
+
+## Cấu trúc thư mục
+
+- `src`: Thư mục chứa mã nguồn của ứng dụng
+  - `src/auth`: Chứa các file liên quan đến xác thực người dùng: xác minh danh tính của người dùng, xác thực mật khẩu và xác thực thông qua phương thức JWT (JSON Web Tokens)
+  - `src/controllers`: Chứa các file nhận request, gọi đến service để xử lý logic nghiệp vụ, trả về response.
+  - `src/services`: Chứa các file chứa method gọi đến database để xử lý logic nghiệp vụ.
+  - `src/models`: Chứa các file chứa các model
+  - `src/routes`: Chứa các file chứa các route
+  - `src/utils`: Chứa các file chứa các chức năng phổ biến mà bạn sẽ yêu cầu nhiều lần trong suốt mã của mình ví dụ như check missing params trước khi xử lý dữ liệu chẳng hạn
+
 ## Dự án dự kiến bao gồm những tính năng sau
 
 - Authentication
