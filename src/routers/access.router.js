@@ -9,7 +9,6 @@ router.post("/shop/login", asyncHandler(accessController.login));
 router.post("/shop/signup", asyncHandler(accessController.signup));
 
 // Authentication
-// router.use(authentication)
 router.use(authenticationV2);
 
 router.post("/shop/logout", asyncHandler(accessController.logout));
