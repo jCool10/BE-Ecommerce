@@ -1,33 +1,33 @@
-const express = require('express')
-const morgan = require('morgan')
-const helmet = require('helmet')
-const compression = require('compression')
-const app = express()
+const express = require("express");
+const morgan = require("morgan");
+const helmet = require("helmet");
+const compression = require("compression");
+const app = express();
 
-app.use(morgan('dev'))
-app.use(helmet())
-app.use(compression())
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(morgan("dev"));
+app.use(helmet());
+app.use(compression());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-require('./dbs/init.mongodb')
+require("./dbs/init.mongodb");
 
-app.use('/', require('./routers'))
+app.use("/", require("./routers"));
 
 app.use((req, res, next) => {
-  const error = new Error('Not found')
-  error.status = 404
-  next(error)
-})
+  const error = new Error("Not found");
+  error.status = 404;
+  next(error);
+});
 
 app.use((error, req, res, next) => {
-  const statusCode = error.status || 500
+  const statusCode = error.status || 500;
   return res.status(statusCode).json({
-    status: 'error',
+    status: "error",
     code: statusCode,
     stack: error.stack,
-    message: error.message || 'Internal Server Error',
-  })
-})
+    message: error.message || "Internal Server Error",
+  });
+});
 
-module.exports = app
+module.exports = app;
